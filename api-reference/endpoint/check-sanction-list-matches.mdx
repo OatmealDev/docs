@@ -1,0 +1,177 @@
+---
+title: "Check sanction lists matches"
+api: "GET https://api-dev.oatmeal.dev/v1/sanctions"
+description: "This endpoint allows to check specific name against OFAC SND sanction list."
+---
+
+Either `name` or `identification` should be provided.
+
+### Body
+
+<ParamField query="name" type="string" optional="true">
+    Full name of person of name of a business to search by.
+</ParamField>
+
+<ParamField query="identification" type="string" optional="true">
+    Id of a document (e.g. passport number) to search by.
+</ParamField>
+
+### Response
+
+<ResponseField name="matches" type="object">
+
+    List of matches
+
+    <Expandable title="'matches' structure">
+
+        <ResponseField name="type" type="string" required="true">
+            Type of entity. Can be one of: `ENTITY`, `INDIVIDUAL`, `AIRCRAFT`, `VESSEL`
+        </ResponseField>
+        <ResponseField name="name" type="string" required="true">
+            Name of entity
+        </ResponseField>
+        <ResponseField name="programs" type="array" required="true">
+            The scope that caused the questioned person to be listed
+        </ResponseField>
+        <ResponseField name="addresses" type="array">
+            List of addresses
+        </ResponseField>
+        <ResponseField name="dateOfBirths" type="array">
+            List of dates of births associated with this entity (present only for `INDIVIDUAL` entity type)
+
+            <Expandable title="'dateOfBirths' structure">
+                <ResponseField name="date" type="string">
+                </ResponseField>
+                <ResponseField name="primary" type="boolean">
+                </ResponseField>
+            </Expandable>
+        </ResponseField>
+        <ResponseField name="placeOfBirths" type="array">
+            List of places of births associated with this entity (present only for `INDIVIDUAL` entity type)
+
+            <Expandable title="'placeOfBirths' structure">
+                <ResponseField name="place" type="string">
+                </ResponseField>
+                <ResponseField name="primary" type="boolean">
+                </ResponseField>
+            </Expandable>
+        </ResponseField>
+        <ResponseField name="nationalities" type="array">
+            List of nationalities associated with this entity (present only for `INDIVIDUAL` entity type)
+
+            <Expandable title="'nationalities' structure">
+                <ResponseField name="nationality" type="string">
+                </ResponseField>
+                <ResponseField name="primary" type="boolean">
+                </ResponseField>
+            </Expandable>
+        </ResponseField>
+        <ResponseField name="citizenships" type="array">
+            List of citizenships associated with this entity (present only for `INDIVIDUAL` entity type)
+
+            <Expandable title="'citizenships' structure">
+                <ResponseField name="citizenship" type="string">
+                </ResponseField>
+                <ResponseField name="primary" type="boolean">
+                </ResponseField>
+            </Expandable>
+        </ResponseField>
+        <ResponseField name="remarks" type="string">
+            Remarks provided by entity who originated sanctions
+        </ResponseField>
+        <ResponseField name="title" type="string">
+            Title of sanctioned entity (present only for `INDIVIDUAL` entity type)
+        </ResponseField>
+        <ResponseField name="vesselInfo" type="object">
+            Vessel information (present only for `VESSEL` entity type)
+
+            <Expandable title="'vesselInfo' structure">
+                <ResponseField name="vesselFlag" type="string">
+                </ResponseField>
+                <ResponseField name="vesselType" type="boolean">
+                </ResponseField>
+                <ResponseField name="grossRegisteredTonnage" type="boolean">
+                </ResponseField>
+                <ResponseField name="callSign" type="boolean">
+                </ResponseField>
+                <ResponseField name="tonnage" type="boolean">
+                </ResponseField>
+                <ResponseField name="vesselOwner" type="boolean">
+                </ResponseField>
+            </Expandable>
+        </ResponseField>
+        <ResponseField name="identifications" type="array">
+            List of identifications associated with this entity
+
+            <Expandable title="'identifications' structure">
+                <ResponseField name="type" type="string" required="true">
+                </ResponseField>
+                <ResponseField name="number" type="string" required="true">
+                </ResponseField>
+                <ResponseField name="country" type="string">
+                </ResponseField>
+                <ResponseField name="issueDate" type="string">
+                </ResponseField>
+                <ResponseField name="expirationDate" type="string">
+                </ResponseField>
+            </Expandable>
+        </ResponseField>
+        <ResponseField name="aliases" type="array">
+            List of aliases associated with this entity
+
+            <Expandable title="'aliases' structure">
+                <ResponseField name="name" type="string" required="true">
+                </ResponseField>
+                <ResponseField name="category" type="string" required="true">
+                </ResponseField>
+                <ResponseField name="type" type="string" required="true">
+                </ResponseField>
+            </Expandable>
+        </ResponseField>
+    </Expandable>
+
+</ResponseField>
+
+<RequestExample>
+
+    ```bash Search by name
+    curl --location --request GET 'https://api-dev.oatmeal.dev/v1/sanctions?name=
+    <name>' \
+    --header 'Authorization: Bearer <token>'
+    ```
+
+    ```bash Search by id
+    curl --location --request GET 'https://api-dev.oatmeal.dev/v1/sanctions?identification=
+    <identification>' \
+    --header 'Authorization: Bearer <token>'
+    ```
+</RequestExample>
+
+<ResponseExample>
+
+    ```json Response
+    {
+        "matches": [
+            {
+                "type": "ENTITY",
+                "name": "AEROCARIBBEAN AIRLINES",
+                "programs": [
+                    "CUBA"
+                ],
+                "addresses": [
+                    "Havana, Cuba"
+                ],
+                "identifications": [],
+                "aliases": [
+                    {
+                        "name": "AERO-CARIBBEAN",
+                        "category": "STRONG",
+                        "type": "a.k.a."
+                    }
+                ]
+            }
+        ]
+    }
+    ```
+
+</ResponseExample>
